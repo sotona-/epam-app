@@ -1,0 +1,21 @@
+metadata:
+  labels:
+    some-label: pod-runner
+spec:
+  containers:
+  - name: jnlp
+    env:
+    - name: CONTAINER_ENV_VAR
+      value: jnlp
+    - name: JENKINS_URL
+      value: http://jenkins
+  - name: python
+    image: python:3.6.12-alpine3.12
+    command:
+    - cat
+    tty: true
+  - name: docker
+    image: docker:19.03.13-dind
+    command:
+    - cat
+    tty: true
