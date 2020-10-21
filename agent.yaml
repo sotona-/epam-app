@@ -21,6 +21,7 @@ spec:
     args:
     - --host=unix:///var/run/docker.sock
     - --storage-driver=overlay
+    - --insecure-registry nexus:8086
     tty: true
     securityContext:
       privileged: true
