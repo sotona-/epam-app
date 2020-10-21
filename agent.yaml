@@ -22,3 +22,5 @@ spec:
     - --host=unix:///var/run/docker.sock
     - --storage-driver=overlay
     tty: true
+    securityContext:
+      privileged: true
