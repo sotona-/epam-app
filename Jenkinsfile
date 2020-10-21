@@ -16,7 +16,7 @@ pipeline {
       steps {
 	container('docker') {
           withCredentials([usernamePassword(credentialsId: 'nexus', passwordVariable: 'dockerHubPassword', usernameVariable: 'dockerHubUser')]) {
-            sh "docker login -u ${env.dockerHubUser} -p ${env.dockerHubPassword}"
+            sh "docker login nexus:8086 -u ${env.dockerHubUser} -p ${env.dockerHubPassword}"
             sh "docker push nexus:8086/testapp/testapp:${env.BUILD_NUMBER}"
           }
 	}
