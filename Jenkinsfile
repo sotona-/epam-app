@@ -5,14 +5,6 @@ pipeline {
     }
   }
   stages {
-    stage('Build') {
-                steps {
-                        container('python') {
-                                sh 'python3.6 setup.py bdist_egg'
-                        }
-                }
-        }
-
     stage('Docker Build') {
       steps {
 	container('docker') {
