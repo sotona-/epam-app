@@ -16,6 +16,4 @@ spec:
     tty: true
   - name: docker
     image: docker:19.03.13-dind
-    command:
-    - cat
     tty: true
