@@ -22,7 +22,7 @@ spec:
   - name: docker
     image: docker:19.03.13-dind
     command:
-    - dockerd 
+    - dockerd
     args:
     - --host=unix:///var/run/docker.sock
     - --storage-driver=overlay
