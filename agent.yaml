@@ -14,6 +14,11 @@ spec:
     command:
     - cat
     tty: true
+  - name: kubectl
+    image: bitnami/kubectl:1.17.13
+    command:
+    - cat
+    tty: true
   - name: docker
     image: docker:19.03.13-dind
     command:
