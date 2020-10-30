@@ -15,6 +15,7 @@ pipeline {
       steps {
       	container('docker') {
           script {
+            sh "printenv"
             sh "sed -i 's/__TAG__/${env.BUILD_ID}/g' app/templates/index.html"
             docker.withRegistry('https://eu.gcr.io', 'gcr:registry') {
               def image = docker.build("engaged-yen-293214/testapp:${env.BUILD_ID}")
