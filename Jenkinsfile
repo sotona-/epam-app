@@ -9,26 +9,19 @@ pipeline {
         CLUSTER_NAME = 'cluster-1'
         LOCATION = 'europe-north1-a'
         CREDENTIALS_ID = 'engaged-yen-293214'
-        tag = ''
-        release = false
+        if (env.gitlabBranch.contains('refs/tags')) {
+              tag = env.gitlabBranch.replace('refs/tags/','')
+              release = true
+        } else {
+              tag = env.BUILD_ID
+              release = false
+        }
   }
   stages {
     stage('Docker Push') {
       steps {
       	container('docker') {
           script {
-            println('1')
-            println(env.tag)
-            if (env.gitlabBranch.contains('refs/tags')) {
-              env.tag = env.gitlabBranch.replace('refs/tags/','')
-              env.release = true
-              println('2')
-              println(env.tag)
-            } else {
-              env.tag = env.BUILD_ID
-            }
-            println('3')
-            println(env.tag)
             sh "sed -i 's/__TAG__/${env.tag}/g' app/templates/index.html"
             docker.withRegistry('https://eu.gcr.io', 'gcr:registry') {
               def image = docker.build("engaged-yen-293214/testapp:${env.tag}")
