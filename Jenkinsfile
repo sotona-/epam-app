@@ -18,7 +18,7 @@ pipeline {
             docker.withRegistry('https://eu.gcr.io', 'gcr:registry') {
               def image = docker.build("engaged-yen-293214/testapp:${env.BUILD_ID}")
               image.push("${env.BUILD_ID}")
-              myContainer.push("latest")
+              image.push("latest")
             }
           }
 	      }
