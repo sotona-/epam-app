@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Pod
 metadata:
-  name: static-web
+  name: static-web-2
   namespace: testapp-test
 spec:
   containers:
