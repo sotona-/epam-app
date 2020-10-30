@@ -15,11 +15,18 @@ pipeline {
       steps {
       	container('docker') {
           script {
-            sh "printenv"
-            sh "sed -i 's/__TAG__/${env.BUILD_ID}/g' app/templates/index.html"
+            def tag = ''
+            def release = false
+            if (env.gitlabBranch.contains('refs/tags')) {
+              tag = env.gitlabBranch.replace('refs/tags/','')
+              release = true
+            } else {
+              tag = env.BUILD_ID
+            }
+            sh "sed -i 's/__TAG__/${tag}/g' app/templates/index.html"
             docker.withRegistry('https://eu.gcr.io', 'gcr:registry') {
-              def image = docker.build("engaged-yen-293214/testapp:${env.BUILD_ID}")
-              image.push("${env.BUILD_ID}")
+              def image = docker.build("engaged-yen-293214/testapp:${tag}")
+              image.push("${tag}")
               image.push("latest")
             }
           }
@@ -29,7 +36,12 @@ pipeline {
     stage('Deploy') {
       steps{
 	      container('kubectl') {
-          sh "sed -i 's/__TAG__/${env.BUILD_ID}/g' k8s/manifest.yaml"
+          if (release) {
+            sh "sed -i 's/__NS__/testapp-test/g' k8s/manifest.yaml"
+          } else {
+            sh "sed -i 's/__NS__/testapp-release/g' k8s/manifest.yaml"
+          }
+          sh "sed -i 's/__TAG__/${tag}/g' k8s/manifest.yaml"
           step([
             $class: 'KubernetesEngineBuilder',
             projectId: env.PROJECT_ID,
