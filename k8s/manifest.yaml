@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: main
-        image: eu.gcr.io/engaged-yen-293214/testapp:latest
+        image: eu.gcr.io/engaged-yen-293214/testapp:__TAG__
         ports:
         - containerPort: 5000
 ---

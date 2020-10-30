@@ -27,6 +27,9 @@ pipeline {
     stage('Deploy') {
       steps{
 	      container('kubectl') {
+          step {
+            sh "sed -i 's/__TAG__/${env.BUILD_ID}/g' k8s/manifest.yaml"
+          }
           step([
             $class: 'KubernetesEngineBuilder',
             projectId: env.PROJECT_ID,
