@@ -11,19 +11,13 @@ pipeline {
         CREDENTIALS_ID = 'engaged-yen-293214'
   }
   stages {
-    stage('Docker Build') {
-      steps {
-	      container('docker') {
-        	sh "docker build $WORKSPACE -t nexus:8086/testapp/testapp:${env.BUILD_NUMBER} "
-	      }
-      }
-    }
     stage('Docker Push') {
       steps {
       	container('docker') {
-          withCredentials([usernamePassword(credentialsId: 'nexus', passwordVariable: 'dockerHubPassword', usernameVariable: 'dockerHubUser')]) {
-            sh "docker login http://nexus:8086 -u ${env.dockerHubUser} -p ${env.dockerHubPassword}"
-            sh "docker push nexus:8086/testapp/testapp:${env.BUILD_NUMBER}"
+          docker.withRegistry('https://eu.gcr.io', 'gcr:jenkins-docker') {
+            def image = docker.build("engaged-yen-293214/testapp:${env.BUILD_ID}")
+            image.push("${env.BUILD_ID}")
+            myContainer.push("latest")
           }
 	      }
       }
