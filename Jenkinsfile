@@ -36,10 +36,12 @@ pipeline {
     stage('Deploy') {
       steps{
 	      container('kubectl') {
-          if (release) {
-            sh "sed -i 's/__NS__/testapp-test/g' k8s/manifest.yaml"
-          } else {
-            sh "sed -i 's/__NS__/testapp-release/g' k8s/manifest.yaml"
+          step {
+            if (release) {
+              sh "sed -i 's/__NS__/testapp-test/g' k8s/manifest.yaml"
+            } else {
+              sh "sed -i 's/__NS__/testapp-release/g' k8s/manifest.yaml"
+            }
           }
           sh "sed -i 's/__TAG__/${tag}/g' k8s/manifest.yaml"
           step([
