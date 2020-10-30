@@ -17,12 +17,18 @@ pipeline {
       steps {
       	container('docker') {
           script {
+            println('1')
+            println(env.tag)
             if (env.gitlabBranch.contains('refs/tags')) {
               env.tag = env.gitlabBranch.replace('refs/tags/','')
               env.release = true
+              println('2')
+              println(env.tag)
             } else {
               env.tag = env.BUILD_ID
             }
+            println('3')
+            println(env.tag)
             sh "sed -i 's/__TAG__/${env.tag}/g' app/templates/index.html"
             docker.withRegistry('https://eu.gcr.io', 'gcr:registry') {
               def image = docker.build("engaged-yen-293214/testapp:${env.tag}")
