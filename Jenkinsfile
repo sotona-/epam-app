@@ -15,8 +15,8 @@ pipeline {
       steps {
       	container('docker') {
           script {
-            def tag = ''
-            def release = false
+            //def tag = ''
+            //def release = false
             if (env.gitlabBranch.contains('refs/tags')) {
               tag = env.gitlabBranch.replace('refs/tags/','')
               release = true
