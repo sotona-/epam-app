@@ -48,7 +48,7 @@ pipeline {
             clusterName: env.CLUSTER_NAME,
             location: env.LOCATION,
             manifestPattern: 'k8s/manifest.yaml',
-            namespace: release ? 'testapp-release' : 'testapp-test'
+            namespace: release ? 'testapp-release' : 'testapp-test',
             credentialsId: env.CREDENTIALS_ID,
             verifyDeployments: true
           ])
