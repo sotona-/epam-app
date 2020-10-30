@@ -41,13 +41,6 @@ pipeline {
     stage('Deploy') {
       steps{
 	      container('kubectl') {
-          script {
-            if (release) {
-              sh "sed -i 's/__NS__/testapp-release/g' k8s/manifest.yaml"
-            } else {
-              sh "sed -i 's/__NS__/testapp-test/g' k8s/manifest.yaml"
-            }
-          }
           sh "sed -i 's/__TAG__/${tag}/g' k8s/manifest.yaml"
           step([
             $class: 'KubernetesEngineBuilder',
@@ -55,6 +48,7 @@ pipeline {
             clusterName: env.CLUSTER_NAME,
             location: env.LOCATION,
             manifestPattern: 'k8s/manifest.yaml',
+            namespace: release ? 'testapp-release' : 'testapp-test'
             credentialsId: env.CREDENTIALS_ID,
             verifyDeployments: true
           ])
