@@ -9,25 +9,27 @@ pipeline {
         CLUSTER_NAME = 'cluster-1'
         LOCATION = 'europe-north1-a'
         CREDENTIALS_ID = 'engaged-yen-293214'
+        tag = ''
+        release = false
   }
   stages {
     stage('Docker Push') {
       steps {
       	container('docker') {
           script {
-            //def tag = ''
-            //def release = false
             if (env.gitlabBranch.contains('refs/tags')) {
-              tag = env.gitlabBranch.replace('refs/tags/','')
-              release = true
+              env.tag = env.gitlabBranch.replace('refs/tags/','')
+              env.release = true
             } else {
-              tag = env.BUILD_ID
+              env.tag = env.BUILD_ID
             }
-            sh "sed -i 's/__TAG__/${tag}/g' app/templates/index.html"
+            sh "sed -i 's/__TAG__/${env.tag}/g' app/templates/index.html"
             docker.withRegistry('https://eu.gcr.io', 'gcr:registry') {
-              def image = docker.build("engaged-yen-293214/testapp:${tag}")
-              image.push("${tag}")
-              image.push("latest")
+              def image = docker.build("engaged-yen-293214/testapp:${env.tag}")
+              image.push("${env.tag}")
+              if (env.release) {
+                image.push("latest")
+              }
             }
           }
 	      }
@@ -37,13 +39,13 @@ pipeline {
       steps{
 	      container('kubectl') {
           script {
-            if (release) {
+            if (env.release) {
               sh "sed -i 's/__NS__/testapp-test/g' k8s/manifest.yaml"
             } else {
               sh "sed -i 's/__NS__/testapp-release/g' k8s/manifest.yaml"
             }
           }
-          sh "sed -i 's/__TAG__/${tag}/g' k8s/manifest.yaml"
+          sh "sed -i 's/__TAG__/${env.tag}/g' k8s/manifest.yaml"
           step([
             $class: 'KubernetesEngineBuilder',
             projectId: env.PROJECT_ID,
