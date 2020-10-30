@@ -14,10 +14,12 @@ pipeline {
     stage('Docker Push') {
       steps {
       	container('docker') {
-          docker.withRegistry('https://eu.gcr.io', 'gcr:jenkins-docker') {
-            def image = docker.build("engaged-yen-293214/testapp:${env.BUILD_ID}")
-            image.push("${env.BUILD_ID}")
-            myContainer.push("latest")
+          script {
+            docker.withRegistry('https://eu.gcr.io', 'gcr:jenkins-docker') {
+              def image = docker.build("engaged-yen-293214/testapp:${env.BUILD_ID}")
+              image.push("${env.BUILD_ID}")
+              myContainer.push("latest")
+            }
           }
 	      }
       }
